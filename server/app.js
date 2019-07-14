@@ -1,7 +1,9 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import morgan from 'morgan';
 
 import { articleRoutes } from './api/routes/article';
+import { logError, logSuccess } from './utils/console';
 
 const app = express();
 
@@ -11,6 +13,18 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+mongoose.connect(
+  `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@testing-4dn9p.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
+  { useNewUrlParser: true }
+)
+  .then(() => {
+    logSuccess('Connected to the MongoDB,');
+  })
+  .catch(err => {
+    logError('Cannot connect to the MongoDB.');
+    logError(err);
+  });
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
