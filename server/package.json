@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "Backend part of article-management",
   "main": "server.js",
-  "scripts": {},
+  "scripts": {
+    "dev": "nodemon -r esm server.js",
+    "start": "node -r esm server.js"
+  },
   "author": "Denis Voloshin",
   "license": "ISC",
   "dependencies": {
