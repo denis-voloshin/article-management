@@ -49,6 +49,12 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+  if (err instanceof mongoose.Error.CastError) {
+    return res.status(404).json({
+      message: 'Not found'
+    });
+  }
+
   res.status(err.status || 500).json({
     message: err.message
   });
