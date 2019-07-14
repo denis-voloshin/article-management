@@ -1,6 +1,8 @@
 import express from 'express';
 import morgan from 'morgan';
 
+import { articleRoutes } from './api/routes/article';
+
 const app = express();
 
 if (process.env.NODE_ENV === 'development') {
@@ -23,9 +25,18 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/articles', articleRoutes);
+
 app.use((req, res, next) => {
-  res.status(200).json({
-    message: 'works'
+  const err = new Error('Not found');
+
+  err.status = 404;
+  next(err);
+});
+
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).json({
+    message: err.message
   });
 });
 
