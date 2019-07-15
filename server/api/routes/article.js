@@ -3,16 +3,18 @@ import multer from 'multer';
 import * as R from 'ramda';
 
 import { ArticleController } from '../controllers/article';
-import { validators, validationHandler } from '../validators';
+import { ArticleValidator } from '../validators';
+import { validationHandler } from '../handlers/validation';
 import { mkdirIfNotExistSync } from '../../utils/fs';
 import { getCurrentDate } from '../../utils/date';
+import { rootPath } from '../../utils/constants';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const currentDate = getCurrentDate();
     const dir = `./static/img/${currentDate.year}/${currentDate.month}/${currentDate.day}`;
 
-    mkdirIfNotExistSync(`${__dirname}/../../${dir}`);
+    mkdirIfNotExistSync(`${rootPath}/${dir}`);
     cb(null, dir);
   },
   filename: (req, file, cb) => {
@@ -51,7 +53,7 @@ articleRoutes.get(
 articleRoutes.post(
   '/',
   upload.single('image'),
-  validators.article,
+  ArticleValidator,
   validationHandler,
   ArticleController.articleCreate
 );
@@ -64,7 +66,7 @@ articleRoutes.get(
 articleRoutes.patch(
   '/:articleId',
   upload.single('image'),
-  validators.article,
+  ArticleValidator,
   validationHandler,
   ArticleController.articleUpdate
 );

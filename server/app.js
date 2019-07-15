@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
+import multer from 'multer';
 
 import { articleRoutes } from './api/routes/article';
 import { logError, logSuccess } from './utils/console';
@@ -57,6 +58,12 @@ app.use((err, req, res, next) => {
   if (err instanceof mongoose.Error.CastError) {
     return res.status(404).json({
       message: 'Not found'
+    });
+  }
+
+  if (err instanceof multer.MulterError) {
+    return res.status(400).json({
+      message: err.message
     });
   }
 

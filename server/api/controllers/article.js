@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 import * as R from 'ramda';
 
 import { ArticleModel } from '../models/article';
-import { noImagePath } from '../../utils/constants';
+import { noImagePath, rootPath } from '../../utils/constants';
+import { unlinkIfExist } from '../../utils/fs';
 
 export const ArticleController = {};
 
@@ -67,6 +68,8 @@ ArticleController.articleUpdate = async (req, res, next) => {
     const article = await ArticleModel.findById(articleId);
 
     if (!article) {
+      unlinkIfExist(`${rootPath}/${image}`);
+
       return res.status(404).json({
         message: 'Article was not found'
       });
