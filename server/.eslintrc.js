@@ -203,7 +203,7 @@ module.exports = {
     "no-useless-constructor": "warn",
     "no-useless-rename": "warn",
     "no-var": "warn",
-    "object-shorthand": ["warn", "always", { "avoidQuotes": true, "avoidExplicitReturnArrows": true }],
+    "object-shorthand": ["warn", "always", { "avoidQuotes": true }],
     "prefer-arrow-callback": ["warn", { "allowNamedFunctions": true }],
     "prefer-const": ["warn", { "destructuring": "all" }],
     "prefer-numeric-literals": "warn",
