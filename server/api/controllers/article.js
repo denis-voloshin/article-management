@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
+import * as R from 'ramda';
 
 import { ArticleModel } from '../models/article';
+import { noImagePath } from '../../utils/constants';
 
 export const ArticleController = {};
 
@@ -17,12 +19,14 @@ ArticleController.articleGetList = async (req, res, next) => {
 ArticleController.articleCreate = async (req, res, next) => {
   try {
     const { title, text, isPublic } = req.body;
+    const image = req.file && req.file.path;
 
     const article = new ArticleModel({
       _id: mongoose.Types.ObjectId(),
       title,
       text,
-      isPublic
+      isPublic,
+      image: R.defaultTo(noImagePath, image)
     });
 
     await article.save();
@@ -58,6 +62,7 @@ ArticleController.articleUpdate = async (req, res, next) => {
   try {
     const { articleId } = req.params;
     const { title, text, isPublic } = req.body;
+    const image = req.file && req.file.path;
 
     const article = await ArticleModel.findById(articleId);
 
@@ -67,15 +72,17 @@ ArticleController.articleUpdate = async (req, res, next) => {
       });
     }
 
-    await ArticleModel.updateOne({ _id: articleId }, {
+    const updatedArticle = await ArticleModel.findOneAndUpdate({ _id: articleId }, {
       title,
       text,
       isPublic,
+      image: R.defaultTo(noImagePath, image),
       updatedAt: Date.now()
-    }).exec();
+    }, { 'new': true }).exec();
 
     res.status(200).json({
-      message: 'Article was updated'
+      message: 'Article was updated',
+      article: updatedArticle
     });
   } catch (err) {
     next(err);

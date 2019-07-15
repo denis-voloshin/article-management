@@ -11,12 +11,17 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+app.use('/static', express.static('static'));
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 mongoose.connect(
   `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@testing-4dn9p.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
-  { useNewUrlParser: true }
+  {
+    useNewUrlParser: true,
+    useFindAndModify: false
+  }
 )
   .then(() => {
     logSuccess('Connected to the MongoDB,');

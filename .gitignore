@@ -2,6 +2,8 @@
 
 /server/node_modules
 /server/.env
+/server/static/img/*
+!/server/static/img/no-image.jpg
 
 /app/node_modules
 /app/.next
