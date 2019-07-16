@@ -1,9 +1,11 @@
 import express from 'express';
+import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
 import multer from 'multer';
 
 import { articleRoutes } from './api/routes/article';
+import { userRoutes } from './api/routes/user';
 import { logError, logSuccess } from './utils/console';
 
 const app = express();
@@ -21,6 +23,7 @@ mongoose.connect(
   `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@testing-4dn9p.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
   {
     useNewUrlParser: true,
+    useCreateIndex: true,
     useFindAndModify: false
   }
 )
@@ -46,6 +49,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/articles', articleRoutes);
+app.use('/users', userRoutes);
 
 app.use((req, res, next) => {
   const err = new Error('Not found');
@@ -64,6 +68,24 @@ app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     return res.status(400).json({
       message: err.message
+    });
+  }
+
+  if (err instanceof jwt.TokenExpiredError) {
+    return res.status(401).json({
+      message: 'Token expired'
+    });
+  }
+
+  if (err instanceof jwt.JsonWebTokenError) {
+    return res.status(401).json({
+      message: 'Token is invalid'
+    });
+  }
+
+  if (err instanceof jwt.NotBeforeError) {
+    return res.status(401).json({
+      message: 'Token is not active'
     });
   }
 

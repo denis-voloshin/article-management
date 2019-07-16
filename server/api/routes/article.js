@@ -3,7 +3,7 @@ import multer from 'multer';
 import * as R from 'ramda';
 
 import { ArticleController } from '../controllers/article';
-import { ArticleValidator } from '../validators';
+import { ArticleValidator } from '../validators/article';
 import { validationHandler } from '../handlers/validation';
 import { mkdirIfNotExistSync } from '../../utils/fs';
 import { getCurrentDate } from '../../utils/date';
