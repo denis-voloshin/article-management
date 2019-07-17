@@ -1,14 +1,30 @@
 import jwt from 'jsonwebtoken';
 import * as R from 'ramda';
 
-export const checkAuth = (req, res, next) => {
-  try {
-    const token = R.compose(
-      R.last,
-      R.split('Bearer ')
-    )(req.headers.authorization);
+import { getTokenFromHeader, getUserByToken } from '../../utils/auth';
 
-    req.user = jwt.verify(token, process.env.JWT_SECRET);
+export const checkAuth = async (req, res, next) => {
+  try {
+    if (R.isNil(req.headers.authorization)) {
+      return res.status(401).json({
+        message: 'Token is missing'
+      });
+    }
+
+    const token = getTokenFromHeader(req.headers.authorization);
+
+    jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await getUserByToken(token);
+
+    if (!user) {
+      return res.status(401).json({
+        message: 'Token does not exists'
+      });
+    }
+
+    // eslint-disable-next-line require-atomic-updates
+    req.user = user;
 
     next();
   } catch (err) {

@@ -8,6 +8,7 @@ import { validationHandler } from '../handlers/validation';
 import { mkdirIfNotExistSync } from '../../utils/fs';
 import { getCurrentDate } from '../../utils/date';
 import { rootPath } from '../../utils/constants';
+import { checkAuth } from '../handlers/check-auth';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -52,6 +53,7 @@ articleRoutes.get(
 
 articleRoutes.post(
   '/',
+  checkAuth,
   upload.single('image'),
   ArticleValidator,
   validationHandler,
@@ -65,6 +67,7 @@ articleRoutes.get(
 
 articleRoutes.patch(
   '/:articleId',
+  checkAuth,
   upload.single('image'),
   ArticleValidator,
   validationHandler,
@@ -73,5 +76,6 @@ articleRoutes.patch(
 
 articleRoutes.delete(
   '/:articleId',
+  checkAuth,
   ArticleController.articleDelete
 );

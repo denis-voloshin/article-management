@@ -21,13 +21,15 @@ ArticleController.articleCreate = async (req, res, next) => {
   try {
     const { title, text, isPublic } = req.body;
     const image = req.file && req.file.path;
+    const user = req.user;
 
     const article = new ArticleModel({
       _id: mongoose.Types.ObjectId(),
       title,
       text,
       isPublic,
-      image: R.defaultTo(noImagePath, image)
+      image: R.defaultTo(noImagePath, image),
+      author: user
     });
 
     await article.save();
@@ -47,7 +49,7 @@ ArticleController.articleGet = async (req, res, next) => {
 
     const article = await ArticleModel.findById(articleId);
 
-    if (!article) {
+    if (R.isNil(article)) {
       return res.status(404).json({
         message: 'Article was not found'
       });
@@ -64,10 +66,11 @@ ArticleController.articleUpdate = async (req, res, next) => {
     const { articleId } = req.params;
     const { title, text, isPublic } = req.body;
     const image = req.file && req.file.path;
+    const user = req.user;
 
     const article = await ArticleModel.findById(articleId);
 
-    if (!article) {
+    if (R.isNil(article)) {
       unlinkIfExist(`${rootPath}/${image}`);
 
       return res.status(404).json({
@@ -75,13 +78,21 @@ ArticleController.articleUpdate = async (req, res, next) => {
       });
     }
 
-    const updatedArticle = await ArticleModel.findOneAndUpdate({ _id: articleId }, {
-      title,
-      text,
-      isPublic,
-      image: R.defaultTo(noImagePath, image),
-      updatedAt: Date.now()
-    }, { 'new': true }).exec();
+    if (!R.equals(article.author, user._id)) {
+      return res.status(403).json({
+        message: 'You are not allowed to edit this article'
+      });
+    }
+
+    const updatedArticle = await ArticleModel
+      .findOneAndUpdate({ _id: articleId }, {
+        title,
+        text,
+        isPublic,
+        image: R.defaultTo(noImagePath, image),
+        updatedAt: Date.now()
+      }, { 'new': true })
+      .exec();
 
     res.status(200).json({
       message: 'Article was updated',
@@ -98,13 +109,15 @@ ArticleController.articleDelete = async (req, res, next) => {
 
     const article = await ArticleModel.findById(articleId);
 
-    if (!article) {
+    if (R.isNil(article)) {
       return res.status(404).json({
         message: 'Article was not found'
       });
     }
 
-    await ArticleModel.deleteOne({ _id: articleId }).exec();
+    await ArticleModel
+      .deleteOne({ _id: articleId })
+      .exec();
 
     res.status(200).json({
       message: 'Article was deleted'

@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import * as R from 'ramda';
 
 import { UserModel } from '../models/user';
-import { getUserToken } from '../../utils/auth';
+import { generateUserToken } from '../../utils/auth';
 
 export const UserController = {};
 
@@ -13,7 +13,7 @@ UserController.register = async (req, res, next) => {
 
     const existingUser = await UserModel.findOne({ login }).exec();
 
-    if (existingUser) {
+    if (!R.isNil(existingUser)) {
       return res.status(409).json({
         message: 'User with such login exists'
       });
@@ -28,11 +28,15 @@ UserController.register = async (req, res, next) => {
 
     await user.save();
 
-    const token = getUserToken(user._id, user.login);
+    const token = generateUserToken(user._id, user.login);
+
+    const updatedUser = await UserModel
+      .findOneAndUpdate({ _id: user._id }, { token }, { 'new': true })
+      .exec();
 
     res.status(201).json({
       message: 'User created',
-      user: R.omit(['password'])(user.toObject()),
+      user: updatedUser,
       token
     });
   } catch (err) {
@@ -44,9 +48,12 @@ UserController.login = async (req, res, next) => {
   try {
     const { login, password } = req.body;
 
-    const user = await UserModel.findOne({ login }).exec();
+    const user = await UserModel
+      .findOne({ login })
+      .select('+password')
+      .exec();
 
-    if (!user) {
+    if (R.isNil(user)) {
       return res.status(401).json({
         message: 'Login or password is incorrect'
       });
@@ -60,7 +67,9 @@ UserController.login = async (req, res, next) => {
       });
     }
 
-    const token = getUserToken(user._id, user.login);
+    const token = generateUserToken(user._id, user.login);
+
+    await UserModel.updateOne({ _id: user._id }, { token });
 
     res.status(200).json({ token });
   } catch (err) {
