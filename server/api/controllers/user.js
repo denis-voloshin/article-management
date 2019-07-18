@@ -11,7 +11,9 @@ UserController.register = async (req, res, next) => {
   try {
     const { login, password } = req.body;
 
-    const existingUser = await UserModel.findOne({ login }).exec();
+    const existingUser = await UserModel
+      .findOne({ login })
+      .exec();
 
     if (!R.isNil(existingUser)) {
       return res.status(409).json({

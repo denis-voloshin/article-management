@@ -9,6 +9,7 @@ import { mkdirIfNotExistSync } from '../../utils/fs';
 import { getCurrentDate } from '../../utils/date';
 import { rootPath } from '../../utils/constants';
 import { checkAuth } from '../handlers/check-auth';
+import { getUserFromToken } from '../handlers/get-user-from-token';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -48,6 +49,7 @@ export const articleRoutes = express.Router();
 
 articleRoutes.get(
   '/',
+  getUserFromToken,
   ArticleController.articleGetList
 );
 
@@ -62,6 +64,7 @@ articleRoutes.post(
 
 articleRoutes.get(
   '/:articleId',
+  getUserFromToken,
   ArticleController.articleGet
 );
 

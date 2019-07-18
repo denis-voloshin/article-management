@@ -9,9 +9,18 @@ export const ArticleController = {};
 
 ArticleController.articleGetList = async (req, res, next) => {
   try {
-    const articles = await ArticleModel.find().exec();
+    const { user } = req;
+    const articles = await ArticleModel
+      .find()
+      .populate('author')
+      .exec();
 
-    res.status(200).json({ articles });
+    const allowedArticles = R.filter(article => R.or(
+      article.isPublic,
+      R.equals(article.author._id, R.prop('_id', user))
+    ))(articles);
+
+    res.status(200).json({ articles: allowedArticles });
   } catch (err) {
     next(err);
   }
@@ -21,7 +30,7 @@ ArticleController.articleCreate = async (req, res, next) => {
   try {
     const { title, text, isPublic } = req.body;
     const image = req.file && req.file.path;
-    const user = req.user;
+    const { user } = req;
 
     const article = new ArticleModel({
       _id: mongoose.Types.ObjectId(),
@@ -46,12 +55,21 @@ ArticleController.articleCreate = async (req, res, next) => {
 ArticleController.articleGet = async (req, res, next) => {
   try {
     const { articleId } = req.params;
+    const { user } = req;
 
-    const article = await ArticleModel.findById(articleId);
+    const article = await ArticleModel
+      .findById(articleId)
+      .populate('author');
 
     if (R.isNil(article)) {
       return res.status(404).json({
         message: 'Article was not found'
+      });
+    }
+
+    if (!article.isPublic && !R.equals(article.author._id, R.prop('_id', user))) {
+      return res.status(403).json({
+        message: 'You are not allowed to view this article'
       });
     }
 
@@ -92,6 +110,7 @@ ArticleController.articleUpdate = async (req, res, next) => {
         image: R.defaultTo(noImagePath, image),
         updatedAt: Date.now()
       }, { 'new': true })
+      .populate('author')
       .exec();
 
     res.status(200).json({
@@ -106,12 +125,19 @@ ArticleController.articleUpdate = async (req, res, next) => {
 ArticleController.articleDelete = async (req, res, next) => {
   try {
     const { articleId } = req.params;
+    const { user } = req;
 
     const article = await ArticleModel.findById(articleId);
 
     if (R.isNil(article)) {
       return res.status(404).json({
         message: 'Article was not found'
+      });
+    }
+
+    if (!R.equals(article.author, user._id)) {
+      return res.status(403).json({
+        message: 'You are not allowed to delete this article'
       });
     }
 
