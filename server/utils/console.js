@@ -1,5 +1,5 @@
-/* eslint no-console: "off" */
-/* eslint no-empty-function: "off" */
+/* eslint-disable no-console */
+/* eslint-disable no-empty-function */
 
 import chalk from 'chalk';
 import * as R from 'ramda';

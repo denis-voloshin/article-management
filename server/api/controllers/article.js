@@ -145,6 +145,8 @@ ArticleController.articleDelete = async (req, res, next) => {
       .deleteOne({ _id: articleId })
       .exec();
 
+    unlinkIfExist(`${rootPath}/${article.image}`);
+
     res.status(200).json({
       message: 'Article was deleted'
     });

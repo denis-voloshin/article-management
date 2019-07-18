@@ -4,12 +4,12 @@ import * as R from 'ramda';
 
 import { ArticleController } from '../controllers/article';
 import { ArticleValidator } from '../validators/article';
-import { validationHandler } from '../handlers/validation';
+import { validationHandler } from '../middleware/validation';
 import { mkdirIfNotExistSync } from '../../utils/fs';
 import { getCurrentDate } from '../../utils/date';
 import { rootPath } from '../../utils/constants';
-import { checkAuth } from '../handlers/check-auth';
-import { getUserFromToken } from '../handlers/get-user-from-token';
+import { checkAuth } from '../middleware/check-auth';
+import { getUserFromToken } from '../middleware/get-user-from-token';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
