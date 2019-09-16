@@ -2,7 +2,7 @@
 /* eslint-disable no-empty-function */
 
 import chalk from 'chalk';
-import * as R from 'ramda';
+import _ from 'lodash/fp';
 
 const getLogger = () => {
   if (process.env.NODE_ENV !== 'production') {
@@ -14,10 +14,10 @@ const getLogger = () => {
 
 export const log = getLogger();
 
-export const logSuccess = R.compose(getLogger(), chalk.green);
+export const logSuccess = _.flow([chalk.green, getLogger()]);
 
-export const logWarning = R.compose(getLogger(), chalk.yellow);
+export const logWarning = _.flow([chalk.yellow, getLogger()]);
 
-export const logError = R.compose(getLogger(), chalk.red);
+export const logError = _.flow([chalk.red, getLogger()]);
 
-export const logInfo = R.compose(getLogger(), chalk.cyan);
+export const logInfo = _.flow([chalk.cyan, getLogger()]);

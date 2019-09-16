@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import * as R from 'ramda';
+import _ from 'lodash/fp';
 
 import { ArticleModel } from '../models/article';
 import { noImagePath, rootPath } from '../../utils/constants';
@@ -15,10 +15,9 @@ ArticleController.articleGetList = async (req, res, next) => {
       .populate('author')
       .exec();
 
-    const allowedArticles = R.filter(article => R.or(
-      article.isPublic,
-      R.equals(article.author._id, R.prop('_id', user))
-    ))(articles);
+    const allowedArticles = _.filter(article =>
+      article.isPublic || _.isEqual(article.author._id, _.property('_id', user))
+    )(articles);
 
     res.status(200).json({ articles: allowedArticles });
   } catch (err) {
@@ -37,7 +36,7 @@ ArticleController.articleCreate = async (req, res, next) => {
       title,
       text,
       isPublic,
-      image: R.defaultTo(noImagePath, image),
+      image: _.defaultTo(noImagePath, image),
       author: user
     });
 
@@ -61,13 +60,13 @@ ArticleController.articleGet = async (req, res, next) => {
       .findById(articleId)
       .populate('author');
 
-    if (R.isNil(article)) {
+    if (_.isNil(article)) {
       return res.status(404).json({
         message: 'Article was not found'
       });
     }
 
-    if (!article.isPublic && !R.equals(article.author._id, R.prop('_id', user))) {
+    if (!article.isPublic && !_.isEqual(article.author._id, _.property('_id', user))) {
       return res.status(403).json({
         message: 'You are not allowed to view this article'
       });
@@ -88,7 +87,7 @@ ArticleController.articleUpdate = async (req, res, next) => {
 
     const article = await ArticleModel.findById(articleId);
 
-    if (R.isNil(article)) {
+    if (_.isNil(article)) {
       unlinkIfExist(`${rootPath}/${image}`);
 
       return res.status(404).json({
@@ -96,7 +95,7 @@ ArticleController.articleUpdate = async (req, res, next) => {
       });
     }
 
-    if (!R.equals(article.author, user._id)) {
+    if (!_.isEqual(article.author, user._id)) {
       return res.status(403).json({
         message: 'You are not allowed to edit this article'
       });
@@ -107,7 +106,7 @@ ArticleController.articleUpdate = async (req, res, next) => {
         title,
         text,
         isPublic,
-        image: R.defaultTo(noImagePath, image),
+        image: _.defaultTo(noImagePath, image),
         updatedAt: Date.now()
       }, { 'new': true })
       .populate('author')
@@ -129,13 +128,13 @@ ArticleController.articleDelete = async (req, res, next) => {
 
     const article = await ArticleModel.findById(articleId);
 
-    if (R.isNil(article)) {
+    if (_.isNil(article)) {
       return res.status(404).json({
         message: 'Article was not found'
       });
     }
 
-    if (!R.equals(article.author, user._id)) {
+    if (!_.isEqual(article.author, user._id)) {
       return res.status(403).json({
         message: 'You are not allowed to delete this article'
       });

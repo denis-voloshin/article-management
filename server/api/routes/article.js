@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import * as R from 'ramda';
+import _ from 'lodash/fp';
 
 import { ArticleController } from '../controllers/article';
 import { ArticleValidator } from '../validators/article';
@@ -30,7 +30,7 @@ const storage = multer.diskStorage({
 const fileFilter = (req, file, cb) => {
   const allowedMimeTypes = ['image/jpeg', 'image/png'];
 
-  if (R.none(R.equals(file.mimetype), allowedMimeTypes)) {
+  if (!_.any(_.isEqual(file.mimetype), allowedMimeTypes)) {
     cb(null, false);
   } else {
     cb(null, true);

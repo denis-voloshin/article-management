@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken';
-import * as R from 'ramda';
+import _ from 'lodash/fp';
 
 import { getTokenFromHeader, getUserByToken } from '../../utils/auth';
 
 export const checkAuth = async (req, res, next) => {
   try {
-    if (R.isNil(req.headers.authorization)) {
+    if (_.isNil(req.headers.authorization)) {
       return res.status(401).json({
         message: 'Token is missing'
       });

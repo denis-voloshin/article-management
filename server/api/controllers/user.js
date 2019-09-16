@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
-import * as R from 'ramda';
+import _ from 'lodash/fp';
 
 import { UserModel } from '../models/user';
 import { generateUserToken } from '../../utils/auth';
@@ -15,7 +15,7 @@ UserController.register = async (req, res, next) => {
       .findOne({ login })
       .exec();
 
-    if (!R.isNil(existingUser)) {
+    if (!_.isNil(existingUser)) {
       return res.status(409).json({
         message: 'User with such login exists'
       });
@@ -55,7 +55,7 @@ UserController.login = async (req, res, next) => {
       .select('+password')
       .exec();
 
-    if (R.isNil(user)) {
+    if (_.isNil(user)) {
       return res.status(401).json({
         message: 'Login or password is incorrect'
       });

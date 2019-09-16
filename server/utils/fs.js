@@ -1,5 +1,5 @@
 import fs from 'fs';
-import * as R from 'ramda';
+import _ from 'lodash/fp';
 import { protectedFilePaths } from './constants';
 
 export const mkdirIfNotExistSync = path => {
@@ -15,7 +15,7 @@ export const unlinkIfExistSync = filePath => {
 };
 
 export const unlinkIfExist = filePath => {
-  if (R.any(R.endsWith(R.__, filePath), protectedFilePaths)) {
+  if (_.some(_.endsWith(_.__, filePath), protectedFilePaths)) {
     return;
   }
 

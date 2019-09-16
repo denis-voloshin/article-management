@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import * as R from 'ramda';
+import _ from 'lodash/fp';
 
 import { UserModel } from '../api/models/user';
 
@@ -10,11 +10,14 @@ export const generateUserToken = (_id, login) => jwt.sign(
 );
 
 export const getTokenFromHeader = authorization => {
-  if (R.isNil(authorization)) {
+  if (_.isNil(authorization)) {
     return void 0;
   }
 
-  return R.compose(R.last, R.split('Bearer '))(authorization);
+  return _.flow([
+    _.split('Bearer '),
+    _.last
+  ])(authorization);
 };
 
 export const getUserByToken = token => UserModel.findOne({ token }).exec();

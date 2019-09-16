@@ -24,11 +24,12 @@ mongoose.connect(
   {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useFindAndModify: false
+    useFindAndModify: false,
+    useUnifiedTopology: true
   }
 )
   .then(() => {
-    logSuccess('Connected to the MongoDB,');
+    logSuccess('Connected to the MongoDB.');
   })
   .catch(err => {
     logError('Cannot connect to the MongoDB.');
