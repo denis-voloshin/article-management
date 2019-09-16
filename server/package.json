@@ -2,10 +2,11 @@
   "name": "article-management-server",
   "version": "1.0.0",
   "description": "Backend part of article-management",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "dev": "nodemon -r esm server.js",
-    "start": "node -r esm server.js"
+    "dev": "nodemon -r esm index.js",
+    "start": "node -r esm index.js",
+    "lint": "eslint ."
   },
   "author": "Denis Voloshin",
   "license": "ISC",
