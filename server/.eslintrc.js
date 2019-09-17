@@ -15,7 +15,8 @@ module.exports = {
     "browser": true,
     "es6": true,
     "node": true,
-    "commonjs": true
+    "commonjs": true,
+    "mocha": true
   },
   "globals": {
     "BigInt": true

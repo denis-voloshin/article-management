@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon -r esm index.js",
     "start": "node -r esm index.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "NODE_ENV=test node -r esm ./node_modules/mocha/bin/mocha --exit -r mocha-clean \"api/test/*.test.js\""
   },
   "author": "Denis Voloshin",
   "license": "ISC",
