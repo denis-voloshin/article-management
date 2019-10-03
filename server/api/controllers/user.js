@@ -71,7 +71,9 @@ UserController.login = async (req, res, next) => {
 
     const token = generateUserToken(user._id, user.login);
 
-    await UserModel.updateOne({ _id: user._id }, { token });
+    await UserModel
+      .updateOne({ _id: user._id }, { token })
+      .exec();
 
     res.status(200).json({ token });
   } catch (err) {

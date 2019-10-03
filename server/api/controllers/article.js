@@ -58,7 +58,8 @@ ArticleController.articleGet = async (req, res, next) => {
 
     const article = await ArticleModel
       .findById(articleId)
-      .populate('author');
+      .populate('author')
+      .exec();
 
     if (_.isNil(article)) {
       return res.status(404).json({
@@ -85,7 +86,9 @@ ArticleController.articleUpdate = async (req, res, next) => {
     const image = req.file && req.file.path;
     const user = req.user;
 
-    const article = await ArticleModel.findById(articleId);
+    const article = await ArticleModel
+      .findById(articleId)
+      .exec();
 
     if (_.isNil(article)) {
       unlinkIfExist(`${rootPath}/${image}`);
@@ -126,7 +129,9 @@ ArticleController.articleDelete = async (req, res, next) => {
     const { articleId } = req.params;
     const { user } = req;
 
-    const article = await ArticleModel.findById(articleId);
+    const article = await ArticleModel
+      .findById(articleId)
+      .exec();
 
     if (_.isNil(article)) {
       return res.status(404).json({
