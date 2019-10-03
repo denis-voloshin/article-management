@@ -1,14 +1,16 @@
 import mongoose from 'mongoose';
-import { UserModel } from '../models/user';
 import bcrypt from 'bcrypt';
 
-export const ensureConnection = () => new Promise(resolve => {
+import { UserModel } from '../models/user';
+
+export const ensureConnection = () => new Promise((resolve, reject) => {
   if (mongoose.connection.db) {
     return resolve(mongoose.connection.db);
   }
   mongoose.connection.on('connected', () =>
     resolve(mongoose.connection.db)
   );
+  mongoose.connection.on('error' , reject);
 });
 
 export const cleanDatabase = cb => mongoose.connection.db.dropDatabase(cb);
