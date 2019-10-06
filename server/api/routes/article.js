@@ -14,7 +14,9 @@ import { getUserFromToken } from '../middleware/get-user-from-token';
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const currentDate = getCurrentDate();
-    const dir = `./static/img/${currentDate.year}/${currentDate.month}/${currentDate.day}`;
+    const dir = process.env.NODE_ENV === 'test'
+      ? './static/img/test'
+      : `./static/img/${currentDate.year}/${currentDate.month}/${currentDate.day}`;
 
     mkdirIfNotExistSync(`${rootPath}/${dir}`);
     cb(null, dir);
