@@ -193,7 +193,6 @@ module.exports = {
     "template-tag-spacing": "warn",
 
     /* ==================== ECMAScript 6 ==================== */
-    "arrow-body-style": "warn",
     "arrow-parens": ["warn", "as-needed"],
     "arrow-spacing": "warn",
     "generator-star-spacing": ["warn", { "before": false, "after": true, "method": "both" }],
