@@ -1,0 +1,35 @@
+{
+  "name": "article-management-app",
+  "version": "1.0.0",
+  "description": "Frontend part of article-management",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node -r esm index.js",
+    "build": "next build",
+    "start": "npm run build && next start"
+  },
+  "author": "Denis Voloshin",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.1.0",
+    "immer": "^4.0.1",
+    "lodash": "^4.17.15",
+    "next": "^9.1.1",
+    "next-routes": "^1.4.2",
+    "prop-types": "^15.7.2",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.88.1",
+    "styled-components": "^4.4.0"
+  },
+  "devDependencies": {
+    "@zeit/next-css": "^1.0.1",
+    "babel-eslint": "^10.0.3",
+    "babel-plugin-styled-components": "^1.10.6",
+    "eslint": "^6.5.1",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-react": "^7.16.0",
+    "esm": "^3.2.25"
+  }
+}
