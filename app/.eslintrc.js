@@ -247,7 +247,6 @@ module.exports = {
     "react/prefer-es6-class": "warn",
     "react/prefer-stateless-function": "warn",
     "react/prop-types": "off",
-    "react/require-default-props": "warn",
     "react/self-closing-comp": "warn",
     "react/sort-comp": "warn",
     "react/style-prop-object": "error",
