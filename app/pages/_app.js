@@ -1,12 +1,18 @@
 import React from 'react';
-import App from 'next/app';
+import NextApp from 'next/app';
 
 import 'semantic-ui-css/semantic.min.css';
 
-export default class NextApp extends App {
+import { StoreProvider } from '../store';
+
+export default class App extends NextApp {
   render() {
     const { Component, pageProps } = this.props;
 
-    return <Component {...pageProps} />;
+    return (
+      <StoreProvider>
+        <Component {...pageProps} />
+      </StoreProvider>
+    );
   }
 }
