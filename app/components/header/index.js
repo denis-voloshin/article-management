@@ -14,17 +14,18 @@ const HeaderContainer = styled.header`
 `;
 
 const HeaderText = styled(Heading).attrs({
-  as: 'h1'
+  as: 'h1',
+  children: 'Header'
 })``;
 
 const LoginButton = styled(Button).attrs({
-  content: 'Login',
+  children: 'Login',
   color: 'blue'
 })``;
 
 export const Header = () => (
   <HeaderContainer>
-    <HeaderText>Header</HeaderText>
+    <HeaderText />
     <LoginButton />
   </HeaderContainer>
 );
