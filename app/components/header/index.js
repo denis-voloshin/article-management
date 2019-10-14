@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import * as PropTypes from 'prop-types';
 
 import { Heading } from '../common/heading';
 import { Button } from '../common/button';
+import { LoginModal } from './login-modal';
 
 const HeaderContainer = styled.header`
   background: #fff;
@@ -19,13 +21,28 @@ const HeaderText = styled(Heading).attrs({
 })``;
 
 const LoginButton = styled(Button).attrs({
-  children: 'Login',
+  children: 'Login/register',
   color: 'blue'
 })``;
 
-export const Header = () => (
-  <HeaderContainer>
-    <HeaderText />
-    <LoginButton />
-  </HeaderContainer>
-);
+export const Header = ({ className }) => {
+  const [isLoginModalShown, setIsLoginModalShown] = useState(false);
+
+  const handleModelShow = () => setIsLoginModalShown(true);
+  const handleModelClose = () => setIsLoginModalShown(false);
+
+  return (
+    <HeaderContainer className={className}>
+      <HeaderText />
+      <LoginButton onClick={handleModelShow} />
+      <LoginModal
+        isLoginModalShown={isLoginModalShown}
+        handleModelClose={handleModelClose}
+      />
+    </HeaderContainer>
+  );
+};
+
+Header.propTypes = {
+  className: PropTypes.string
+};
